@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Zen+Old+Mincho&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="./index.css" />
+    <title>PORTFOLIO</title>
+  </head>
+  <body>
+    <div class="webgl-canvas">
+      <canvas class="webgl-canvas__body" id="webgl-canvas"></canvas>
+    </div>
+  </body>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r79/three.min.js"></script>
+  <script>
+    const canvasEl = document.getElementById("webgl-canvas");
+    const canvasSize = {
+      w: window.innerWidth,
+      h: window.innerHeight,
+    };
+
+    const renderer = new THREE.WebGLRenderer({ canvas: canvasEl });
+    renderer.setPixelRatio(window.devicePixelRatio);
+    renderer.setSize(canvasSize.w, canvasSize.h);
+
+    // ページの読み込みを待つ
+    window.addEventListener("DOMContentLoaded", init);
+
+    function init() {
+      const width = window.innerWidth;
+      const height = window.innerHeight;
+
+      const renderer = new THREE.WebGLRenderer({
+        canvas: document.querySelector("#webgl-canvas"),
+        antialias: true,
+        devicePixelRatio: window.devicePixelRatio,
+      });
+      renderer.setSize(width, height);
+
+      const scene = new THREE.Scene();
+      scene.fog = new THREE.Fog(0x4d5aaf, 500, 2000);
+      const camera = new THREE.PerspectiveCamera(45, width / height);
+      camera.position.set(0, 0, +1000);
+
+      const group = new THREE.Group();
+      scene.add(group);
+
+      for (let i = 0; i < 1000; i++) {
+        let mesh;
+        if (i % 3 === 1) {
+          mesh = new THREE.Mesh(
+            new THREE.BoxBufferGeometry(50, 50, 50),
+            new THREE.MeshStandardMaterial({ wireframe: true })
+          );
+        } else if (i % 3 === 2) {
+          mesh = new THREE.Mesh(
+            new THREE.BoxBufferGeometry(75, 5, 75),
+            new THREE.MeshStandardMaterial()
+          );
+        } else {
+          mesh = new THREE.Mesh(
+            new THREE.BoxBufferGeometry(50, 50, 50),
+            new THREE.MeshStandardMaterial()
+          );
+        }
+        mesh.position.x = (Math.random() - 0.5) * 2000;
+        mesh.position.y = (Math.random() - 0.5) * 2000;
+        mesh.position.z = (Math.random() - 0.5) * 2000;
+        mesh.rotation.x = Math.random() * 2 * Math.PI;
+        mesh.rotation.y = Math.random() * 2 * Math.PI;
+        mesh.rotation.z = Math.random() * 2 * Math.PI;
+        group.add(mesh);
+      }
+
+      scene.add(new THREE.DirectionalLight(0xf55353, 2));
+      scene.add(new THREE.AmbientLight(0x143f6b));
+
+      tick();
+
+      function tick() {
+        group.rotateY(0.01);
+        renderer.render(scene, camera);
+        requestAnimationFrame(tick);
+      }
+    }
+  </script>
+</html>
